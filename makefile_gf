@@ -1,0 +1,78 @@
+
+# Put compiler command in FC
+
+FC=mpifort
+#FSTRICT=-Wextra -Wno-unused -Wsurprising -Wall #-Wimplicit #-pedantic
+#FVECTORIZE=-ftree-vectorizer-verbose=2 -ftree-vectorize -ftree-vect-loop-version
+#FOPTIMIZE=-fvariable-expansion-in-unroller -funroll-loops $(FVECTORIZE)
+#OPTS = -O3 -g $(FOPTIMIZE) #-fopenmp
+
+
+FFLAGS = $(OPTS) $(PROF)
+LDFLAGS = $(FFLAGS)
+
+OBJ = main.o \
+      hatnderivatives6thOrder.o \
+      derivatives6thOrder.o \
+      derivatives6thOrderPBC.o \
+      energy.o \
+      evolveeuler.o \
+      fluxesNumRelSO3.o \
+      covariantDerivsSO3.o \
+      fieldStrengthsSO3.o \
+      icMMbarTwistedNumerical.o \
+      ghostsend.o \
+      ghostrecvl.o \
+      ghostrecvu.o \
+      printenergy.o \
+      evolveloop.o \
+      processCoord.o \
+      icgamma.o	\
+      boundaryIndices.o \
+      ghostcellsX.o \
+      ghostcellsY.o \
+      ghostcellsZ.o \
+      hatnghostcellsX.o \
+      hatnghostcellsY.o \
+      hatnghostcellsZ.o \
+#      emain.o \
+      eevolveeuler.o \
+      eghostcellsX.o \
+      eghostcellsY.o \
+      eghostcellsZ.o \
+      eleapforward.o \
+      eaverageforhalfstep.o \
+      echangename.o \
+      ederivatives6thOrder.o \
+      ederivatives6thOrderPBC.o \
+      ecovariantDerivs.o \
+      eenergy.o \
+      eprintenergy.o \
+      effluxesNumRel.o \
+      efieldStrengths.o \
+      efluxesNumRel.o \
+      einitialconditions.o \
+
+all: cnSO3.out 
+
+.f.o:
+	$(FC) $(FFLAGS) -c $*.f
+
+cnSO3.out: $(OBJ) 
+	$(FC) -o  $@ $(LDFLAGS) $(OBJ) 
+
+cleanf:
+	rm: -f *.o *.dvi *.aux *.log core.* *~
+
+
+
+# In this file, FC, FFLAGS, and PROGRAM are macros (variables) that can be used 
+# throughout the file. If we just type make in the terminal, the command all in 
+# this file be executed. $(PROGRAM) in all command is it's dependency and this 
+# will cause $(PROGRAM) command to execute which, in turn, depends on the 
+# object files $(OBJ). $(PROGRAM) commands is then executed. But $(OBJ) again 
+# have dependencies on %.f files to be generated. So then the %.o command is 
+# executed. Flag -c says to generate the object file, the -o $@ says to put 
+# output of the compilation in the file named on the left side of the :, $< is 
+# the first term in the dependency list. $@ and $^ are left and right sides of 
+# :, respectively.
